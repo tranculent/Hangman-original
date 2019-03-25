@@ -12,6 +12,7 @@ char *print_word(char sampleArray[], char *word);
 int is_letter_already_gussed(char c, char array[]);
 int contains(char c, char array[]);
 int how_many_instances(char c, char array[]);
+void print_clue(char *chosenWord);
 
 int main() {
     srand(time(NULL));
@@ -41,7 +42,18 @@ char *print_word(char word_being_guessed[], char *original_word) {
 
     while (1) {
         system("@cls||clear"); // clear cmd window every itereation of the loop
-        printf("%s\n", original_word);
+        if (x == 0) {
+            print_clue(original_word);
+            printf("\n");
+        }
+        
+        if (x == 0) {
+            for (int i = 0; i < strlen(original_word); i++) {
+                printf("*");
+            }
+        }
+
+        printf("\n");
         
         // --- WINNING CONDITION ---
         if (contains('_', word_being_guessed) == 0) {
@@ -122,8 +134,9 @@ int is_letter_already_gussed(char c, char array[]) {
     return 0;
 }
 
-char *generate_strings() {
+void print_clue(char *chosenWord) {
     char *arrayOfWords[20];
+
     arrayOfWords[0] = "string";
     arrayOfWords[1] = "lettuce";
     arrayOfWords[2] = "telephone";
@@ -145,7 +158,6 @@ char *generate_strings() {
     arrayOfWords[18] = "table";
     arrayOfWords[19] = "motorcycle";
 
-    char *chosenWord = arrayOfWords[rand() % 20];
     int ret = strcmp(chosenWord, arrayOfWords[0]);
 
     if (strcmp(chosenWord, arrayOfWords[0]) == 0) {
@@ -189,6 +201,33 @@ char *generate_strings() {
     } else if (strcmp(chosenWord, arrayOfWords[19]) == 0) {
         printf("A very dangerous vehicle.\n");
     }
+}
+
+char *generate_strings() {
+    char *arrayOfWords[20];
+    arrayOfWords[0] = "string";
+    arrayOfWords[1] = "lettuce";
+    arrayOfWords[2] = "telephone";
+    arrayOfWords[3] = "photograph";
+    arrayOfWords[4] = "microphone";
+    arrayOfWords[5] = "lolipop";
+    arrayOfWords[6] = "magician";
+    arrayOfWords[7] = "farewell";
+    arrayOfWords[8] = "manhunt";
+    arrayOfWords[9] = "feather";
+    arrayOfWords[10] = "significant";
+    arrayOfWords[11] = "fahrenheit";
+    arrayOfWords[12] = "temperature";
+    arrayOfWords[13] = "physics";
+    arrayOfWords[14] = "missile";
+    arrayOfWords[15] = "sinister";
+    arrayOfWords[16] = "matrices";
+    arrayOfWords[17] = "folder";
+    arrayOfWords[18] = "table";
+    arrayOfWords[19] = "motorcycle";
+
+    char *chosenWord = arrayOfWords[rand() % 20];
+    
     return chosenWord;
 }
 
