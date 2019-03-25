@@ -3,110 +3,126 @@
 #include <time.h>
 #include <string.h>
 #include <conio.h>
-/*
- * GIVE A RANDOM WORD FROM A HUGE LIST TO GUESS
- * FOR HOWEVER MANY LETTERS THERE ARE IN THE WORD, GIVE THIS MANY UNDERSCORES (______)
- * GIVE OPTION FOR USER INPUT TO GIVEN RANDOM LETTERS FROM THE ALPHABET. ONCE USED A CERTAIN LETTER, CANNOT BE USED AGAIN,
- * IF THE USER HAS GUESSED CORRECTLY AND THERE ARE LETTERS IN THE GIVEN WORD, SHOW ALL OF THE LETTERS THAT ARE IN THE WORD
- * THE PLAYER'S GOT 5 ATTEMPTS TO GUESS THE WORD
-*/
 
-/*
-two problems: 
-1. if i keep selecting an already selected letter, it increments to winningspree
-2. losing condition doesn't work 
-*/
+#define NUMBER_OF_GUESSES 6
 
-char askforinput();
-char *generateStrings();
-char *printWord(char sampleArray[], char *word);
-int isinarray(int value, char array[]);
+char ask_for_input();
+char *generate_strings();
+char *print_word(char sampleArray[], char *word);
+int is_letter_already_gussed(char c, char array[]);
+int contains(char c, char array[]);
+int how_many_instances(char c, char array[]);
 
 int main() {
     srand(time(NULL));
     // the randomly selected word
-    char *word = generateStrings();
-    char sampleArray[strlen(word)+1];
-    sampleArray[strlen(word)] = '\0';
-    for (int i = 0; i < strlen(word); i++) {
-        sampleArray[i] = '_';
+    char *original_word = generate_strings();
+    char word_being_guessed[strlen(original_word)+1];
+    word_being_guessed[strlen(original_word)] = '\0';
+    for (int i = 0; i < strlen(original_word); i++) {
+        word_being_guessed[i] = '_';
     }
-    printf("%s\n", word);
-    char *printedWord = printWord(sampleArray, word);
+    printf("%s\n", original_word);
+    char *printedWord = print_word(word_being_guessed, original_word);
     return 0;
 }
 
-char *printWord(char sampleArray[], char *word) {
+char *print_word(char word_being_guessed[], char *original_word) {
     char letter;
     int stopLoop=0;
     int x = 0;
-    int winningSpree = 0;
+    int losing_points = 0;
     int lost = 0;
-    int maxnumberofinputs = strlen(word) + 6;
-    char selected[maxnumberofinputs];
+    char already_selected_letters[strlen(original_word) + 6];
     int count = 0;
 
+    // __________ -> 
+
+
     while (1) {
-        
         system("@cls||clear"); // clear cmd window every itereation of the loop
-        printf("%s\n", word);
+        printf("%s\n", original_word);
         
-        if (winningSpree==strlen(word)) {
-            printf("Congratulations! You've won!\n");
-            printf("%s", sampleArray);
+        // --- WINNING CONDITION ---
+        if (contains('_', word_being_guessed) == 0) {
+            printf("Congratulations! You've got the word right!\n");    
             break;
         }
-        if (lost == 6) {
-            printf("You lost!\n");
-            printf("The word was: ", word, "\n");
-            break;
-        }
+
         if (x == 0) 
-            for (int i = 0; i < strlen(word); i++) 
+            for (int i = 0; i < strlen(original_word); i++) 
                 printf("_");
         
         if (x > 0) 
-            printf("Current stage of word: %s", sampleArray);
+            printf("Current stage of word: %s", word_being_guessed);
 
         printf("\n");
         printf("Give me a letter: ");
-        letter = askforinput();
+        letter = ask_for_input();
         printf("\n");
 
-        if (count < maxnumberofinputs) {
-            for (int j = 0; j < strlen(word); j++) {
-                if (word[j] == letter && isinarray(word[j], selected) == 1) {
-                    sampleArray[j] = letter;
-                    selected[count] = letter;
-                    count++;
-                    winningSpree++;
-                } else {
-                    lost ++;
+        if (losing_points >= NUMBER_OF_GUESSES)  {
+            printf("You are out of guesses, sorry!");
+            break;
+        }
+
+        if (is_letter_already_gussed(letter, already_selected_letters) == 1) {
+            printf("You already guessed that letter!");
+            continue;
+        }
+        already_selected_letters[count] = letter;
+        count++;
+        // if the word[j] is the letter and word[j] is present in the already_selected_letters[] string array
+        if (contains(letter, original_word) == 1) {
+            for (int i = 0; i < strlen(original_word); i++) { 
+                if (letter == original_word[i]) {
+                    word_being_guessed[i] = letter; 
                 }
             }
+        } else {
+            losing_points++;
         }
-        
+
         x++;
-    }
-    printf("\n");
-    return sampleArray;
+    }   
+     printf("\n");
+     return word_being_guessed;
 }
 
+
 // ask user for character input
-char askforinput() {
+char ask_for_input() {
     char chosenLetter;
     scanf("%c", &chosenLetter);
     return chosenLetter;
 }
 
-int isinarray(int value, char array[]) {
-    for (int i = 0; i < strlen(array); i++) 
-        if (value == array[i]) 
-            return 0;
-    return 1;
+int contains(char c, char array[]) {
+   for (int i = 0; i < strlen(array); i++) 
+       if (array[i] == c) // if a letter is in array return 1
+           return 1;
+
+   return 0;
 }
 
-char *generateStrings() {
+int how_many_instances(char c, char array[]) {
+    int count = 0;
+    for (int i = 0; i < strlen(array); i++) {
+        if (array[i] == c) {
+            count++;
+        }
+    }
+    return count;
+}
+
+int is_letter_already_gussed(char c, char array[]) {
+    if (contains(c, array) == 1){ 
+        return 1;
+    }
+    return 0;
+}
+
+char *generate_strings() {
     char *arrayOfWords[20];
     arrayOfWords[0] = "string";
     arrayOfWords[1] = "lettuce";
