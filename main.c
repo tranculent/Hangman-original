@@ -2,31 +2,33 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <conio.h>
 
 #define NUMBER_OF_GUESSES 6
 
 char ask_for_input();
-char *generate_strings();
-char *print_word(char sampleArray[], char *word);
+char *randomly_generated_word();
+void  print_word(char sampleArray[], char *word);
 int is_letter_already_gussed(char c, char array[]);
 int contains(char c, char array[]);
 void print_clue(char *chosenWord);
 void hangman(int i);
 void you_lost();
+void assign_and_print_underscores (char word_being_guessed[]);
 
 int main() {
     srand(time(NULL));
-    // the randomly selected word
-    char *original_word = generate_strings();
+    char *original_word = randomly_generated_word();
     char word_being_guessed[strlen(original_word)+1];
     word_being_guessed[strlen(original_word)] = '\0';
-    for (int i = 0; i < strlen(original_word); i++) {
-        word_being_guessed[i] = '_';
-    }
+    assign_and_print_underscores(word_being_guessed);
     printf("%s\n", original_word);
-    char *printedWord = print_word(word_being_guessed, original_word);
+    print_word(word_being_guessed, original_word);
     return 0;
+}
+
+void assign_and_print_underscores (char word_being_guessed[]) {
+    for (int i = 0; i < strlen(word_being_guessed); i++) 
+        word_being_guessed[i] = '_';  
 }
 
 void draw_hangman(int i){			//A function that prints the hanged man ascii art according to how many wrong guesses the user has made.
@@ -65,7 +67,7 @@ void you_lost() {
     printf("   |||___/ \\__,_| |_|/___/|___/\\__|\n");
 }
 
-char *print_word(char word_being_guessed[], char *original_word) {
+void print_word(char word_being_guessed[], char *original_word) {
     char letter;
     int x = 0;
     int losing_points = 0;
@@ -143,7 +145,6 @@ char *print_word(char word_being_guessed[], char *original_word) {
         x++;
     }   
      printf("\n");
-     return word_being_guessed;
 }
 
 
@@ -238,7 +239,7 @@ void print_clue(char *chosenWord) {
     }
 }
 
-char *generate_strings() {
+char *randomly_generated_word() {
     char *arrayOfWords[20];
     arrayOfWords[0] = "string";
     arrayOfWords[1] = "lettuce";
