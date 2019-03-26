@@ -11,8 +11,9 @@ char *generate_strings();
 char *print_word(char sampleArray[], char *word);
 int is_letter_already_gussed(char c, char array[]);
 int contains(char c, char array[]);
-int how_many_instances(char c, char array[]);
 void print_clue(char *chosenWord);
+void hangman(int i);
+void you_lost();
 
 int main() {
     srand(time(NULL));
@@ -28,21 +29,62 @@ int main() {
     return 0;
 }
 
+void draw_hangman(int i){			//A function that prints the hanged man ascii art according to how many wrong guesses the user has made.
+        switch (i){
+        case 0:
+            printf(" ___________.._______ \n| .__________))______| \n| | / /      || \n| | | / \n| |/ \n| | \n| | | \n| | \n| | \n| | | \n| | \n| | \n| | | \n| | \n|=========|_`-' `-' |===| \n|=|=======\\       '=|=| \n| |        \\        | | \n: :         \\       : : \n. .          `'       . . \n");
+            break;
+        case 1:
+            printf(" ___________.._______ \n| .__________))______| \n| | / /      || \n| | | /        ||.-''. \n| |/         |/  _  \\n| |          ||  `/,| \n| |          (\\`_.' \n| | | \n| | \n| | \n| | \n| | \n| | \n| | \n| | \n| | \n|=========|_`-' `-' |===| \n|=|=======\\       '=|=| \n| |        \\        | | \n: :         \\       : : \n. .          `'       . . \n");
+            break;
+        case 2:
+            printf(" ___________.._______ \n| .__________))______| \n| | / /      || \n| |/ /       || \n| | /        ||.-''. \n| |/         |/  _  \\n| |          ||  `/,| \n| |          (\\`_.' \n| |         .-`--'. \n| |           . .    \n| |          |   |    \n| |          | . |     \n| |          |   |      \n| | \n| | \n| | \n| | \n| | \n|=========|_`-' `-' |===| \n|=|=======\\       '=|=| \n| |        \\        | | \n: :         \\       : : \n. .          `'       . . \n");
+            break;
+        case 3:
+            printf("___________.._______ \n| .__________))______| \n| | / /      || \n| |/ /       || \n| | /        ||.-''. \n| |/         |/  _  \\n| |          ||  `/,| \n| |          (\\`_.' \n| |         .-`--'. \n| |        /Y . .    \n| |       // |   |    \n| |      //  | . |     \n| |     ')   |   |      \n| | \n| | \n| | \n| | \n| | \n|=========|_`-' `-' |===| \n|=|=======\\       '=|=| \n| |        \\        | | \n: :         \\       : : \n. .          `'       . . \n");
+            break;
+        case 4:
+            printf(" ___________.._______ \n| .__________))______| \n| | / /      || \n| |/ /       || \n| | /        ||.-''. \n| |/         |/  _  \\n| |          ||  `/,| \n| |          (\\`_.' \n| |         .-`--'. \n| |        /Y . . Y\\n| |       // |   | \\ \n| |      //  | . |  \\ \n| |     ')   |   |   (` \n| | \n| | \n| | \n| | \n| | \n|=========|_`-' `-' |===| \n|=|=======\\       '=|=| \n| |        \\        | | \n: :         \\       : : \n. .          `'       . . \n");
+            break;
+        case 5:
+            printf(" ___________.._______ \n| .__________))______| \n| | / /      || \n| |/ /       || \n| | /        ||.-''. \n| |/         |/  _  \\n| |          ||  `/,| \n| |          (\\`_.' \n| |         .-`--'. \n| |        /Y . . Y\\n| |       // |   | \\ \n| |      //  | . |  \\ \n| |     ')   |   |   (` \n| |          ||    \n| |          ||    \n| |          ||    \n| |          ||    \n| |         / |    \n==========|_`-' `-' |===| \n|=|=======\\       '=|=| \n| |        \\        | | \n: :         \\       : : \n. .          `'       . . \n");
+            break;
+        case 6:
+            printf(" ___________.._______ \n| .__________))______| \n| | / /      || \n| |/ /       || \n| | /        ||.-''. \n| |/         |/  _  \\n| |          ||  `/,| \n| |          (\\`_.' \n| |         .-`--'. \n| |        /Y . . Y\\n| |       // |   | \\ \n| |      //  | . |  \\ \n| |     ')   |   |   (` \n| |          || || \n| |          || || \n| |          || || \n| |          || || \n| |         / | | \\ \n==========|_`-' `-' |===| \n|=|=======\\       '=|=| \n| |        \\        | | \n: :         \\       : : \n. .          `'       . . \n");
+            break;
+    }       
+}
+
+void you_lost() {
+    printf("\n");
+    printf("_    _             ___         ___\n");
+    printf("\\   //            | |         | |\n");
+    printf(" \\_//___    _     | | ___  ___| |_\n");
+    printf("  \\/  _ \\ | | || | |/ _ \\ / __| __|\n");
+    printf("   || (_) | |_| |  | | (_) \\__ \\ |_\n");
+    printf("   |||___/ \\__,_| |_|/___/|___/\\__|\n");
+}
+
 char *print_word(char word_being_guessed[], char *original_word) {
     char letter;
-    int stopLoop=0;
     int x = 0;
     int losing_points = 0;
     int lost = 0;
     char already_selected_letters[strlen(original_word) + 6];
     int count = 0;
 
-    // __________ -> 
-
-
     while (1) {
         system("@cls||clear"); // clear cmd window every itereation of the loop
         if (x == 0) {
+            //Ascii Art
+            printf(" _                                             \n");
+            printf("| |                                            \n");
+            printf("| |__   __ _ _ __   __ _ _ __ ___   __ _ _ __  \n");
+            printf("| '_ \\ / _` | '_ \\ / _` | '_ ` _ \\ / _` | '_ \\ \n");
+            printf("| | | | (_| | | | | (_| | | | | | | (_| | | | | \n");
+            printf("|_| |_|\\__,_|_| |_|\\__, |_| |_| |_|\\__,_|_| |_| \n");
+            printf("                    __/ |                      \n");
+            printf("                   |___/  \n");
             print_clue(original_word);
             printf("\n");
         }
@@ -65,8 +107,10 @@ char *print_word(char word_being_guessed[], char *original_word) {
             for (int i = 0; i < strlen(original_word); i++) 
                 printf("_");
         
-        if (x > 0) 
+        if (x > 0) { 
+            draw_hangman(losing_points);
             printf("Current stage of word: %s", word_being_guessed);
+        }
 
         printf("\n");
         printf("Give me a letter: ");
@@ -75,6 +119,7 @@ char *print_word(char word_being_guessed[], char *original_word) {
 
         if (losing_points >= NUMBER_OF_GUESSES)  {
             printf("You are out of guesses, sorry!");
+            you_lost();
             break;
         }
 
@@ -115,16 +160,6 @@ int contains(char c, char array[]) {
            return 1;
 
    return 0;
-}
-
-int how_many_instances(char c, char array[]) {
-    int count = 0;
-    for (int i = 0; i < strlen(array); i++) {
-        if (array[i] == c) {
-            count++;
-        }
-    }
-    return count;
 }
 
 int is_letter_already_gussed(char c, char array[]) {
